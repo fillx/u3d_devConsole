@@ -17,6 +17,7 @@
         [System.Serializable]
         internal class Options
         {
+
             public KeyCode ConsoleKey = KeyCode.BackQuote;
             public float TweenTime = 0.4f;
             public int MaxConsoleLines = 120;
