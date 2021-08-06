@@ -151,13 +151,16 @@
             consoleSize = Mathf.Clamp(size, 1, 3);
             PlayerPrefs.SetInt("beastconsole.size", size);
         }
-
+        private bool test;
         internal void Update()
         {
             rect_console = new Rect(0, 0, Screen.width, ConsoleHeight);
             consoleWasOpened = false;
 
-            InputToggleConsole = Input.GetKeyDown(m_options.ConsoleKey);
+            if (test == false)
+                InputToggleConsole = Input.GetKeyDown(m_options.ConsoleKey);
+            else
+                InputToggleConsole = test;
 
             if (InputToggleConsole || GUIToggleConsole)
             {
@@ -209,11 +212,13 @@
 
         internal void OnGUI()
         {
+            DrawOpens();
             if (!drawConsole)
                 return;
 
             GUI.skin = skin;
             DrawConsole();
+           
             if (m_consoleShown)
                 ControlInputField();
         }
@@ -742,8 +747,19 @@
             msgHistory.Clear();
         }
 
-        // The position on of the scrolling viewport
-        public Vector2 scrollPosition = Vector2.zero;
+        float size = 25f;
+        void DrawOpens()
+        {
+            Rect rect1 = new Rect(0,0, size, size);
+            Rect rect2 = new Rect(Screen.width - size,0, size, size);
+
+            GUI.DrawTexture(rect1, img_box);
+            test = GUI.Button(rect1, "C", skin.textArea);
+
+            GUI.DrawTexture(rect2, img_box);
+            test = GUI.Button(rect2, "C", skin.textArea);
+
+        }
 
       
     }

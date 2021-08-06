@@ -39,7 +39,7 @@
             ConsoleGui.OnStateChanged += x => OnStateChanged(x);
         }
 
-        public static void AddCommand(string name, string description, object owner, Action<string[]> callback)
+        public static void AddCommand(string name, object owner, Action<string[]> callback, string description = "")
         {
             if (instance != null && instance.m_backend != null)
                 instance.m_backend.RegisterCommand(name, owner, callback,description);
@@ -50,7 +50,7 @@
             if (instance != null && instance.m_backend != null)
                 instance.m_backend.RemoveCommandIfExists(name, owner);
         }
-        public static void AddVariable<T>(string name, string description, Action<T> setter, object owner)
+        public static void AddVariable<T>(string name, Action<T> setter, object owner, string description = "")
         {
             if (instance != null && instance.m_backend != null)
                 instance.m_backend.RegisterVariable<T>(setter, owner, name, description);

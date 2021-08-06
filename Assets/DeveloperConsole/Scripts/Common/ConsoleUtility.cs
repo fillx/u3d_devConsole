@@ -24,9 +24,9 @@ public static class ConsoleUtility
         Console.WriteLine(obj.ToString());
     }
 
-    public static void RegisterCommand(string name, string description, object owner, System.Action<string[]> callback)
+    public static void RegisterCommand(string name, object owner, System.Action<string[]> callback, string description = "")
     {
-        Console.AddCommand(name, description, owner, callback);
+        Console.AddCommand(name, owner, callback, description);
     }
 
     public static void PrintTableRow(string A, string B, int columnSize = 20)
