@@ -1,4 +1,4 @@
-﻿namespace DeveloperConsole.GUI
+namespace DeveloperConsole.GUI
 {
     using System.Collections.Generic;
 #pragma warning disable 0649
@@ -160,7 +160,11 @@
             if (test == false)
                 InputToggleConsole = Input.GetKeyDown(m_options.ConsoleKey);
             else
+            {
                 InputToggleConsole = test;
+                test = false;
+            }
+               
 
             if (InputToggleConsole || GUIToggleConsole)
             {
@@ -747,18 +751,20 @@
             msgHistory.Clear();
         }
 
-        float size = 25f;
+        float size = Screen.width * 0.1f;
         void DrawOpens()
         {
-            Rect rect1 = new Rect(0,0, size, size);
-            Rect rect2 = new Rect(Screen.width - size,0, size, size);
+            Rect rect1 = new Rect(0,Screen.height - size, size, size);
+            Rect rect2 = new Rect(Screen.width - size, Screen.height - size, size, size);
 
-            GUI.DrawTexture(rect1, img_box);
-            test = GUI.Button(rect1, "C", skin.textArea);
+           // GUI.DrawTexture(rect1, img_box);
+           if(test == false)
+            test = GUI.Button(rect1, "CNSL", skin.textArea);
 
-            GUI.DrawTexture(rect2, img_box);
-            test = GUI.Button(rect2, "C", skin.textArea);
-
+           // GUI.DrawTexture(rect2, img_box);
+           if(test ==false)
+            test = GUI.Button(rect2, "CNSL", skin.textArea);
+            Debug.Log(test);
         }
 
       
