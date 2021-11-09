@@ -77,7 +77,7 @@ namespace DeveloperConsole.GUI
         private Vector2 consoleScrollPosition;
         private float ClosedPosition => -(ConsoleHeight + 20F);
         //private Rect inputFieldRect => new Rect(5, rect_console.y + rect_console.height + 5, 400, skin.textField.CalcHeight(new GUIContent("Input"), 50));
-        private Rect inputFieldRect => new Rect(5, rect_console.y + rect_console.height + 5, Screen.width- 110, 50);
+        private Rect inputFieldRect => new Rect(5, rect_console.y + rect_console.height + 5, Screen.width- 110, skin.label.fontSize * 1.5f);
         private int currentSuggestionIndex = -1;
         private string currentSuggestion;
         private int currentCommandHistoryIndex = -1;
@@ -124,12 +124,17 @@ namespace DeveloperConsole.GUI
             console_currentPosition = ClosedPosition;
             console_targetPosition = ClosedPosition;
 
-            SetFontSize(30);
+            if (PlayerPrefs.HasKey("fontSize"))
+                SetFontSize(PlayerPrefs.GetInt("fontSize"));
+            else
+                ResetSettings(null);
 
-            m_backend.RegisterVariable<int>(SetFontSize, this, "console.fontSize");
-            m_backend.RegisterVariable<float>(SetCommandButonScale, this, "console.btnScale");
-            m_backend.RegisterVariable<int>(SetSize, this, "console.size", "Only 1,2,3");
-            m_backend.RegisterCommand("console.clr", this, Clear);
+            m_backend.RegisterVariable<int>(SetFontSize, this, "cl.fontSize");
+            m_backend.RegisterVariable<float>(SetCommandButonScale, this, "cl.btnScale");
+            m_backend.RegisterVariable<int>(SetSize, this, "cl.size", "Only 1,2,3");
+            m_backend.RegisterCommand("clr", this, Clear);
+            m_backend.RegisterCommand("cl.reset", this, ResetSettings);
+
         }
 
         private void SetFontSize(int fontSize)
@@ -139,6 +144,7 @@ namespace DeveloperConsole.GUI
             skin.label.fontSize = fontSize;
             skin.button.fontSize = fontSize;
             skin.textField.fontSize = (int)(fontSize * 1.4f);
+            PlayerPrefs.SetInt("fontSize", fontSize);
         }
 
         private void SetCommandButonScale(float scale)
@@ -151,18 +157,25 @@ namespace DeveloperConsole.GUI
             consoleSize = Mathf.Clamp(size, 1, 3);
             PlayerPrefs.SetInt("beastconsole.size", size);
         }
-        private bool test;
+
+        private void ResetSettings(string[] parameters)
+        {
+            SetSize(1);
+            SetFontSize(30);            
+        }
+
+        private bool openConsoleOnNextTick;
         internal void Update()
         {
             rect_console = new Rect(0, 0, Screen.width, ConsoleHeight);
             consoleWasOpened = false;
 
-            if (test == false)
+            if (openConsoleOnNextTick == false)
                 InputToggleConsole = Input.GetKeyDown(m_options.ConsoleKey);
             else
             {
-                InputToggleConsole = test;
-                test = false;
+                InputToggleConsole = openConsoleOnNextTick;
+                openConsoleOnNextTick = false;
             }
                
 
@@ -485,7 +498,7 @@ namespace DeveloperConsole.GUI
         private void DrawGroupCommand()
         {
 
-            if (GUI.Button(new Rect(Screen.width - 100, rect_console.y + rect_console.height + 5, 90, 50), "DEL"))
+            if (GUI.Button(new Rect(Screen.width - 100, rect_console.y + rect_console.height + 5, 90, skin.label.fontSize * 1.5f), "DEL"))
                 console_input = string.Empty;          
 
             var inputrect = InputFieldBottom();           
@@ -757,14 +770,13 @@ namespace DeveloperConsole.GUI
             Rect rect1 = new Rect(0,Screen.height - size, size, size);
             Rect rect2 = new Rect(Screen.width - size, Screen.height - size, size, size);
 
-           // GUI.DrawTexture(rect1, img_box);
-           if(test == false)
-            test = GUI.Button(rect1, "CNSL", skin.textArea);
+         
+           if(openConsoleOnNextTick == false)
+            openConsoleOnNextTick = GUI.Button(rect1, "X", skin.textArea);
 
-           // GUI.DrawTexture(rect2, img_box);
-           if(test ==false)
-            test = GUI.Button(rect2, "CNSL", skin.textArea);
-            Debug.Log(test);
+           if(openConsoleOnNextTick ==false)
+            openConsoleOnNextTick = GUI.Button(rect2, "X", skin.textArea);
+          
         }
 
       

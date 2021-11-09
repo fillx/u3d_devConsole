@@ -57,7 +57,7 @@
             greyColor = ConsoleUtility.ToHex(options.colors.suggestionGreyed);
 
             //RegisterCommand("echo", this, Echo);
-            RegisterCommand("console.list",  this, ListCvars);
+            RegisterCommand("cl.list",  this, ListCvars);
             //RegisterCommand("print",  this, Echo);
             RegisterCommand("quit",  this, Quit);
             
