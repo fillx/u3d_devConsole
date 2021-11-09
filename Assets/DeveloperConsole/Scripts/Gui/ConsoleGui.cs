@@ -150,6 +150,7 @@ namespace DeveloperConsole.GUI
         private void SetCommandButonScale(float scale)
         {
             suggestionStyle.fontSize = (int)(suggestionStyle.fontSize * scale);
+            PlayerPrefs.SetFloat("cl.btnsize", scale);
         }
 
         private void SetSize(int size)
@@ -161,7 +162,8 @@ namespace DeveloperConsole.GUI
         private void ResetSettings(string[] parameters)
         {
             SetSize(1);
-            SetFontSize(30);            
+            SetFontSize(30);
+            SetCommandButonScale(1);
         }
 
         private bool openConsoleOnNextTick;
@@ -249,14 +251,14 @@ namespace DeveloperConsole.GUI
 
         private void ControlInputField()
         {
-            Event e = Event.current;
-
+            Event e = Event.current;       
 
             if (!consoleWasOpened && e.type == EventType.KeyDown && e.keyCode == m_options.ConsoleKey)
             {
                 GUI.FocusControl(null);
                 GUIToggleConsole = true;
                 e.Use();
+                
                 return;
             }
 
@@ -264,7 +266,7 @@ namespace DeveloperConsole.GUI
             {
                 if (GUI.GetNameOfFocusedControl() == INPUT_FIELD_NAME)
                 {
-                    if (e.keyCode == KeyCode.Return)
+                    if (e.keyCode == KeyCode.Return ||e.keyCode == KeyCode.KeypadEnter )
                     {
                         e.Use();
                         if (currentSuggestionIndex == -1)
@@ -402,6 +404,8 @@ namespace DeveloperConsole.GUI
                 TextEditor txt = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
                 txt.text = console_input;
                 txt.MoveLineEnd();
+
+
                 moveCursorToEnd = false;
             }
         }
@@ -570,17 +574,40 @@ namespace DeveloperConsole.GUI
                 {
                     currentSuggestion = nextWord;
                     GUI.Label(pos, nextWord, suggestionActiveStyle);
+                    
                 }
                 else
                 {
                     if (GUI.Button(pos, nextWord))
                     {
                         currentSuggestion = nextWord;
-                        AutoComplete2();
+                        AutoComplete2();                        
                     }
                 }
-                num++;               
+                num++;
+              
             }
+            if(num == 0)
+            {
+                Vector2 size2 = Vector2.zero;
+                size2 = suggestionStyle.CalcSize(new GUIContent("ENTER"));
+                if (GUI.Button(new Rect(inputrect.x, inputrect.y + 20, size2.x, size2.x), "ENTER"))
+                {
+                    if (!string.IsNullOrEmpty(console_input))
+                    {
+                        try
+                        {
+                            HandleInput(console_input);
+                        }
+                        finally
+                        {
+                            console_input = "";
+                            ScrollToBottom();
+                        }
+                    }
+                }
+            }
+                
         }
 
         void AutoComplete2()
