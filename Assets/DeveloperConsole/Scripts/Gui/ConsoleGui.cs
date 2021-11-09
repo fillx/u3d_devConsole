@@ -163,7 +163,7 @@ namespace DeveloperConsole.GUI
         {
             SetSize(1);
             SetFontSize(30);
-            SetCommandButonScale(1);
+           // SetCommandButonScale(1);
         }
 
         private bool openConsoleOnNextTick;
